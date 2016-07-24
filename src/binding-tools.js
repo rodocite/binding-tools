@@ -1,9 +1,31 @@
+const React = require('react')
+
 class Binding {
   constructor(yourClass, applicationState) {
     this.class = yourClass
-    this.state = applicationState || null
-    this.methods = Object.getOwnPropertyNames(yourClass.prototype).filter(property => typeof (new yourClass())[property] === 'function')
-    this.properties = Object.getOwnPropertyNames(yourClass.prototype).filter(property => typeof (new yourClass())[property] !== 'function')
+    this.state = applicationState
+    this.prototypeMethods = Object.getOwnPropertyNames(yourClass.prototype).filter(property => typeof (new yourClass(applicationState))[property] === 'function')
+    this.instanceProperties = Object.getOwnPropertyNames(new yourClass(applicationState)).filter(property => typeof (new yourClass(applicationState))[property] !== 'function')
+  }
+
+  methods() {
+    return this.prototypeMethods
+  }
+
+  properties() {
+    return this.instanceProperties
+  }
+
+  reactProps() {
+    if ((new this.class() instanceof React.Component)) {
+      return new this.class(this.state).props
+    }
+
+    console.error('This is not a React class.')
+  }
+
+  describeInstance() {
+    return new this.class(this.state)
   }
 
   describeMethod(methodName) {
@@ -21,7 +43,7 @@ class Binding {
   }
 
   extractMethods(log = true, useCallback = false, callback) {
-    this.methods.slice(1).forEach((method, index) => {
+    this.prototypeMethods.slice(1).forEach((method, index) => {
       const stringifiedMethod = this.class.prototype[method].toString()
 
       if (log) {
@@ -33,19 +55,33 @@ class Binding {
       }
     })
 
-    return `Completed extracting ${this.methods.length - 1} methods.`
+    return `Completed extracting ${this.prototypeMethods.length - 1} methods.`
   }
 
-  showClassInfo(state = this.state) {
+  showReactInfo() {
+    if ((new this.class() instanceof React.Component)) {
+      return new this.class(this.state)
+    }
+
+    console.error('This is not a React class.')
+  }
+
+  showClassInfo() {
     return {
-      name: (new this.class(state)).constructor.name,
+      name: (new this.class(this.state)).constructor.name,
       state: this.state,
-      methods: this.methods,
-      properties: this.properties
+      methods: this.prototypeMethods,
+      properties: this.instanceProperties
     }
   }
 }
 
-module.exports = function(yourClass) {
-  return new Binding(yourClass)
+const pry = () => {
+  let Binding = Binding
+  debugger
+}
+
+module.exports = (yourClass, state = {}) => {
+  state.pry = pry
+  return new Binding(yourClass, state)
 }
