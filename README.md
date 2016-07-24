@@ -1,5 +1,6 @@
 # Binding Tools
 Inspired from Elm's Debug.log and Rails' binding.pry, a simple set of debug tools specifically made to wrap ES6 classes and easily log properties, methods, and state of the instance.
+
 # Install
 `npm install binding-tools`
 
@@ -33,7 +34,8 @@ console.log(BindingTools(App, state).extractMethods())
 `BindingTools(yourClassHere, optionalStateHere)`
 
 ### Methods
-- .describeMethod(methodName) : stringifies the function and returns it
+.describeMethod(methodName)
+  stringifies the function and returns it
 ```
 methodName - string. name of method you want to call on the class.
 
@@ -45,7 +47,8 @@ methodOne() {
   }
 ```
 
-- .runMethod(methodName, methodArguments, state) : runs the method and outputs information on current state. returns the return value of the method.
+.runMethod(methodName, methodArguments, state)
+  runs the method and outputs information on current state. returns the return value of the method.
 ```
 methodName - string. name of method you want to call on the class.
 methodArguments - anything. pass in arguments as if you're passing them directly to the method.
@@ -75,7 +78,8 @@ Return Value
 3
 ```
 
-- .extractMethods(log = true, useCallback = false, callback) : will list the methods on the prototype for you
+.extractMethods(log = true, useCallback = false, callback)
+  will list the methods on the prototype for you
 ```
 log - boolean. defaults to true, will console.log a list to copy and paste
 useCallback - boolean. defaults to false
@@ -107,7 +111,8 @@ console.log(BindingTools(App, state).extractMethods())
 Completed extracting 3 methods.
 ```
 
-- .showClassInfo(state) : returns information about the class
+.showClassInfo(state)
+  returns information about the class
 ```
 state - object. optional state object can be passed in to override
 
